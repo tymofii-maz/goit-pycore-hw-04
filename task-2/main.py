@@ -1,12 +1,16 @@
-def get_cats_info(path):
-    result = []
+from pathlib import Path
+def get_cats_info(path: str | Path) -> list[dict]:
+    cats = []
 
     try:
-        with open(path, "r", encoding="utf-8") as cat_info_txt:
-            for line in cat_info_txt:
+        with open(path, "r", encoding="utf-8") as file:
+            for line in file:
                 line = line.strip()
+
+                # Пропускаємо порожні рядки
                 if not line:
                     continue
+
                 try:
                     cat_id, name, age = line.split(",")
                 except ValueError:
@@ -14,19 +18,18 @@ def get_cats_info(path):
                     continue
 
                 cat = {"id": cat_id, "name": name, "age": age}
-
-                result.append(cat)
+                cats.append(cat)
 
     except FileNotFoundError:
-        print(f"Файл {path} не існує.")
+        print(f"Файл {path} не знайдено.")
         return []
-
     except OSError as error:
-        print(f"Помилка при читанні файлу: {error}.")
+        print(f"Не вдалося прочитати файл: {error}")
         return []
 
-    return result
+    return cats
 
-
-cat_info = get_cats_info("cats.txt")
-print(cat_info)
+if __name__ == "__main__":
+    cats_file = Path(__file__).parent / "cats.txt"
+    cat_info = get_cats_info(cats_file)
+    print(cat_info)
