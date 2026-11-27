@@ -9,7 +9,7 @@ def parse_input(user_input):
     cmd = cmd.strip().lower()
     return cmd, *args
 
-def normalize_number(phone_number: str):
+def normalize_number(phone_number: str) -> str:
     number_cleaned = re.sub(r"\D", "", phone_number)
     if number_cleaned.startswith("0"):
         number_cleaned = f"+38{number_cleaned}" # Assuming the entered number is a UA number.
@@ -17,61 +17,65 @@ def normalize_number(phone_number: str):
         number_cleaned = f"+{number_cleaned}"
     return number_cleaned
     
-def add_contact(args, contacts):
+def add_contact(args: list[str], contacts: dict) -> str:
     if len(args) != 2:
         return "Usage: add NAME NUMBER"
     else:
         name, phone_number = args
         number_cleaned = normalize_number(phone_number)
-        if len(number_cleaned) < 5 or len(number_cleaned) > 15:
+        if number_cleaned == None:
             return "Not a valid phone number."
-        if name == "":
-            return "Please enter a valid name."
-        else: 
-            if name in contacts:
-                print("Contact already exists. Updating instead.")
-            contacts[name] = number_cleaned
-            return "Contact added."
+    
+    if name in contacts:
+        contacts[name] = number_cleaned
+        return "Contact already exists. Updating instead."
 
-def change_contact(args, contacts):
+    contacts[name] = number_cleaned
+    return "Contact added."
+
+def change_contact(args: list[str], contacts: dict) -> str:
     if len(args) != 2:
         return "Usage: change NAME NUMBER"
-    else:
-        name, phone_number = args
-        if name not in contacts:
-            return f"{name} doesn't exist. Please create a contact with the name '{name}' first."
-        else:
-            number_cleaned = normalize_number(phone_number)
-            if len(number_cleaned) < 5 or len(number_cleaned) > 15:
-                return "Not a valid phone number."
-            else:
-                if name == "":
-                    return "Please enter a valid name."
-                else:
-                    contacts[name] = number_cleaned
-                    return "Contact updated."
 
-def show_phone(args, contacts):
+    name, phone_number = args
+    if name not in contacts:
+        return (
+            f"{name} doesn't exist. "
+            f"Please create a contact with the name '{name}' first."
+        )
+
+    number_cleaned = normalize_number(phone_number)
+    if number_cleaned is None:
+        return "Not a valid phone number."
+
+    contacts[name] = number_cleaned
+    return "Contact updated."
+
+def show_phone(args: list[str], contacts: dict) -> str:
     if len(args) != 1:
         return "Usage: phone NAME"
-    else:
-        name = args[0]
-        if name in contacts:
-            return contacts[name]
-        else:
-            return f"{name} doesn't exist. Please create a contact with the name '{name}' first."
 
-def show_all(contacts):
-    if contacts == {}: 
+    name = args[0]
+    if name not in contacts:
+        return (
+            f"{name} doesn't exist. "
+            f"Please create a contact with the name '{name}' first."
+        )
+
+    return contacts[name]
+
+def show_all(contacts: dict) -> str:
+    if not contacts:
         return "You don't have any contacts."
-    else: 
-        for name, number in contacts.items():
-            return f"{name}: {number}"
+
+    lines = []
+    for name, number in contacts.items():
+        lines.append(f"{name}: {number}")
+    return "\n".join(lines)
 
 def main():
     print("Welcome to the assistant bot!")
     contacts = {}
-
 
     commands = """
 add NAME NUMBER - adds a contact.
