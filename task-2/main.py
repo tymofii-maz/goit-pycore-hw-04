@@ -1,11 +1,15 @@
 from pathlib import Path
+
+
 def get_cats_info(path: str | Path) -> list[dict]:
+
     """
     Читає файл з інформацією про котів і повертає список словників.
 
     Кожен рядок файлу виглядає так:  60b90c1c13067a15887e1ae1,Tayson,3
     Якщо файлу немає, повертає порожній список.
     """
+
     cats = []
 
     try:
@@ -34,6 +38,7 @@ def get_cats_info(path: str | Path) -> list[dict]:
         return []
 
     return cats
+
 
 if __name__ == "__main__":
     cats_file = Path(__file__).parent / "cats.txt"
