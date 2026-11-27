@@ -1,5 +1,6 @@
 import re
 
+
 def parse_input(user_input):
     try:
         cmd, *args = user_input.split()
@@ -9,29 +10,34 @@ def parse_input(user_input):
     cmd = cmd.strip().lower()
     return cmd, *args
 
+
 def normalize_number(phone_number: str) -> str:
+    """Number validator for 'add' and 'change' functions"""
     number_cleaned = re.sub(r"\D", "", phone_number)
     if number_cleaned.startswith("0"):
-        number_cleaned = f"+38{number_cleaned}" # Assuming the entered number is a UA number.
+        # Assuming the entered number is a UA number.
+        number_cleaned = f"+38{number_cleaned}"
     else:
         number_cleaned = f"+{number_cleaned}"
     return number_cleaned
-    
+
+
 def add_contact(args: list[str], contacts: dict) -> str:
     if len(args) != 2:
         return "Usage: add NAME NUMBER"
     else:
         name, phone_number = args
         number_cleaned = normalize_number(phone_number)
-        if number_cleaned == None:
+        if number_cleaned is None:
             return "Not a valid phone number."
-    
+
     if name in contacts:
         contacts[name] = number_cleaned
         return "Contact already exists. Updating instead."
 
     contacts[name] = number_cleaned
     return "Contact added."
+
 
 def change_contact(args: list[str], contacts: dict) -> str:
     if len(args) != 2:
@@ -51,6 +57,7 @@ def change_contact(args: list[str], contacts: dict) -> str:
     contacts[name] = number_cleaned
     return "Contact updated."
 
+
 def show_phone(args: list[str], contacts: dict) -> str:
     if len(args) != 1:
         return "Usage: phone NAME"
@@ -64,6 +71,7 @@ def show_phone(args: list[str], contacts: dict) -> str:
 
     return contacts[name]
 
+
 def show_all(contacts: dict) -> str:
     if not contacts:
         return "You don't have any contacts."
@@ -72,6 +80,7 @@ def show_all(contacts: dict) -> str:
     for name, number in contacts.items():
         lines.append(f"{name}: {number}")
     return "\n".join(lines)
+
 
 def main():
     print("Welcome to the assistant bot!")
@@ -108,10 +117,6 @@ exit/close - exits out of the program.
         else:
             print("Invalid command.")
 
-if __name__== "__main__":
+
+if __name__ == "__main__":
     main()
-    
-    
-    
-    
-    
