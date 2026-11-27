@@ -1,14 +1,17 @@
 from pathlib import Path
 
+
 def total_salary(path: str | Path) -> tuple[int | float, int | float]:
+
     """
     Читає файл із зарплатами і повертає (загальна сума, середня зарплата).
 
     Кожен рядок файлу виглядає так:  Alex Korp,3000
     Якщо файлу немає або в ньому немає даних, повертає (0, 0).
     """
+
     salaries = []
-    
+
     try:
         with open(path, "r", encoding="utf-8") as file:
             for line in file:
@@ -45,6 +48,7 @@ def total_salary(path: str | Path) -> tuple[int | float, int | float]:
         average = int(average)
 
     return total, average
+
 
 if __name__ == "__main__":
     salary_file = Path(__file__).parent / "salary.txt"
