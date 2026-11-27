@@ -13,12 +13,24 @@ def parse_input(user_input):
 
 def normalize_number(phone_number: str) -> str:
     """Number validator for 'add' and 'change' functions"""
-    number_cleaned = re.sub(r"\D", "", phone_number)
+    number_cleaned = re.sub(r"[^\d+]", "", phone_number)
+
     if number_cleaned.startswith("0"):
-        # Assuming the entered number is a UA number.
+        # Assuming the entered number is a UA number
         number_cleaned = f"+38{number_cleaned}"
-    else:
+    elif number_cleaned.startswith("380"):
         number_cleaned = f"+{number_cleaned}"
+    elif not number_cleaned.startswith("+"):
+        # Without '+' you can't figure out from what country the number is from
+        return None
+
+    # Ukrainian numbers are 13 characters long (+380 and 9 numbers)
+    if number_cleaned.startswith("+380"):
+        return number_cleaned if len(number_cleaned) == 13 else None
+
+    # International number: '+' and from 7 to 15 numbers
+    if len(number_cleaned) < 8 or len(number_cleaned) > 16:
+        return None
     return number_cleaned
 
 
